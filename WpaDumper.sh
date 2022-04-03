@@ -2,20 +2,26 @@
 
 WLAN=$1
 
-echo "STOPPING SERVICES..."
+mkdir OUTPUT
+mkdir OUTPUT/LOGS
+
+echo "-----STOPPING SERVICES-----"
 sudo systemctl stop networking.service
 sudo systemctl stop wpa_supplicant.service
 
-echo "DUMPING..."
-sudo timeout 3s sudo hcxdumptool -i $WLAN -o dumpfile.pca.png --active_beacon --enable_status=15 > dump.log
-WLAN="${WLAN}mon"
+echo "-----DUMPING-----"
+sudo timeout 30s sudo hcxdumptool -i $WLAN -o OUTPUT/dumpfile.pcapng --active_beacon --enable_status=15 > OUTPUT/LOGS/dump.log
 
-echo "GETTING MAC ADDRESSES..."
-sudo timeout 3s sudo hcxdumptool --do_rcascan --silent -i $WLAN > macs.log
+echo "-----GETTING MAC ADDRESSES-----"
+sudo timeout 30s sudo hcxdumptool --do_rcascan -i $WLAN > OUTPUT/LOGS/macs.log
 
-echo "RESTARTING SERVICES..."
+echo "-----RESTARTING SERVICES-----"
 sudo systemctl start networking.service
 sudo systemctl start wpa_supplicant.service
 
-echo "GENERATING HASHES..."
-hcxpcapngtool -o hashes.hc22000 -E essidlist dumpfile.pcapng > genhash.log
+echo "-----GENERATING HASHES-----"
+hcxpcapngtool -o OUTPUT/hashes.hc22000 -E OUTPUT/essidlist OUTPUT/dumpfile.pcapng > OUTPUT/LOGS/genhash.log
+
+
+echo "-----ZIPPING PACKAGE-----"
+zip -r WPADUMP.zip OUTPUT/
