@@ -1,6 +1,7 @@
 #!/usr/bin/bash
 
 WLAN=$1
+RUNTIME=$2
 
 mkdir OUTPUT
 mkdir OUTPUT/LOGS
@@ -10,7 +11,7 @@ sudo systemctl stop networking.service
 sudo systemctl stop wpa_supplicant.service
 
 echo "-----DUMPING-----"
-sudo timeout 10m sudo hcxdumptool -i $WLAN -o OUTPUT/dumpfile.pcapng --active_beacon --enable_status=15 > OUTPUT/LOGS/dump.log
+sudo timeout $RUNTIME sudo hcxdumptool -i $WLAN -o OUTPUT/dumpfile.pcapng --active_beacon --enable_status=15 > OUTPUT/LOGS/dump.log
 
 echo "-----GETTING MAC ADDRESSES-----"
 sudo timeout 2m sudo hcxdumptool --do_rcascan -i $WLAN > OUTPUT/macs
