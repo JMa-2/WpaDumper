@@ -1,4 +1,4 @@
-WpaDumper.sh <wlan> <runtime>
+WpaDumper.sh 'wlan' 'runtime'
 
 runtime examples:
 	5s
